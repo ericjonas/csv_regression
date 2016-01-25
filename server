@@ -1,0 +1,62 @@
+
+shinyServer(function(input, output, session) {
+  
+  output$contents <- renderTable({
+    
+    inFile <- input$file1
+    if (is.null(inFile))
+      return(NULL)
+    
+    x <-read.csv(inFile$datapath, header=input$header, sep=input$sep, quote=input$quote)
+    x 
+  })
+  
+  output$summary <- renderPrint({
+    
+    inFile <- input$file1
+    
+    if (is.null(inFile))
+      return(NULL)
+    
+    x <-read.csv(inFile$datapath, header=input$header, sep=input$sep, quote=input$quote)
+    y <-summary(x)
+    y
+    
+  })
+  
+  output$structure <- renderPrint({
+    
+    inFile <- input$file1
+    if (is.null(inFile))
+      return(NULL)
+    
+    x <-read.csv(inFile$datapath, header=input$header, sep=input$sep, quote=input$quote)
+    
+    str(x)
+  })
+  
+  output$var <- renderUI({ 
+    
+    inFile <- input$file1
+    if (is.null(inFile))
+      return(NULL)
+    x <-read.csv(inFile$datapath, header=input$header, sep=input$sep, quote=input$quote)
+    y<-names(x)
+    
+    
+    selectInput("names", "Variable to Plot", 
+                choices = (y))
+  })
+  
+  output$plot <- renderPlot({
+    inFile <- input$file1
+    if (is.null(inFile))
+      return(NULL)
+    x <-read.csv(inFile$datapath, header=input$header, sep=input$sep, quote=input$quote)
+    
+    barplot(table(x[ ,input$names]), main = "data summary")
+    
+  })
+})
+```
+
